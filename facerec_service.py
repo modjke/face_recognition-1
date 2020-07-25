@@ -54,7 +54,7 @@ def get_faces_dict(path):
 
 def detect_face_locations_in_image(file_stream):
     img = face_recognition.load_image_file(file_stream)
-    return face_recognition.face_locations(img, model="cnn")
+    return face_recognition.face_locations(img, model="hog")
     
 def detect_faces_in_image(file_stream):
     # Load the uploaded image file
