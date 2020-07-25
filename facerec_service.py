@@ -52,7 +52,10 @@ def get_faces_dict(path):
     return dict([(remove_file_ext(image), calc_face_encoding(image))
         for image in image_files])
 
-
+def detect_face_locations_in_image(file_stream):
+    img = face_recognition.load_image_file(file_stream)
+    return face_recognition.face_locations(img, model="cnn")
+    
 def detect_faces_in_image(file_stream):
     # Load the uploaded image file
     img = face_recognition.load_image_file(file_stream)
@@ -89,7 +92,6 @@ def detect_faces_in_image(file_stream):
 
 # <Controller>
 
-
 @app.route('/', methods=['POST'])
 def web_recognize():
     file = extract_image(request)
@@ -100,6 +102,15 @@ def web_recognize():
     else:
         raise BadRequest("Given file is invalid!")
 
+@app.route('/locations', methods=['POST'])
+def web_locations():
+    file = extract_image(request)
+    
+    if file and is_picture(file.filename):
+        # The image file seems valid! Detect faces and return the result.
+        return jsonify(detect_face_locations_in_image(file))
+    else:
+        raise BadRequest("Given file is invalid!")
 
 @app.route('/faces', methods=['GET', 'POST', 'DELETE'])
 def web_faces():
